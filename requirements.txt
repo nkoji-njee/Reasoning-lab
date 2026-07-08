@@ -1,4 +1,3 @@
-```text
+text
     streamlit
     google-generativeai
-    ```

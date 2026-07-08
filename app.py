@@ -1,4 +1,4 @@
-```python
+python
 import streamlit as st
 import google.generativeai as genai
 import hashlib
@@ -48,4 +48,4 @@ if prompt := st.chat_input("Analyze the data..."):
     # HASHING (Trust Anchor)
     block = f"{prompt}|{st.session_state.alpha}|{datetime.datetime.now()}"
     st.sidebar.write(f"Session Hash: {hashlib.sha256(block.encode()).hexdigest()[:10]}...")
-```
+

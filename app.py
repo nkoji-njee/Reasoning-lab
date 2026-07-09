@@ -1,13 +1,12 @@
 import streamlit as st
-import google.generativeai as genai
+import anthropic
 import hashlib
 import json
 import datetime
 # 1. CLOUD SECRETS SETUP
 # We will set the API_KEY in the Streamlit Cloud Dashboard later
-api_key = st.secrets["GOOGLE_API_KEY"]
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-1.5-pro')
+client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
+MODEL = "claude-sonnet-5"
 
 # 2. BAYESIAN ENGINE
 if 'alpha' not in st.session_state:
@@ -33,15 +32,28 @@ if prompt := st.chat_input("Analyze the data..."):
     with st.chat_message("user"):
         st.markdown(prompt)
       # Call AI Coach
-    response = model.generate_content(f"System: You are the Reasoning Lab Coach. Student says: {prompt}")
-    
+    response = client.messages.create(
+        model=MODEL,
+        max_tokens=1024,
+        system="You are the Reasoning Lab Coach.",
+        messages=[{"role": "user", "content": prompt}],
+    )
+    coach_text = response.content[0].text
+
     with st.chat_message("assistant"):
-        st.markdown(response.text)
-        st.session_state.chat_history.append({"role": "assistant", "content": response.text})
+        st.markdown(coach_text)
+        st.session_state.chat_history.append({"role": "assistant", "content": coach_text})
 
     # HIDDEN AUDITOR (Induction)
-    audit_query = f"Audit this response for reasoning quality (0.0 to 1.0). Return ONLY a number: {prompt}"
-    audit_score = float(model.generate_content(audit_query).text.strip())
+    audit_response = client.messages.create(
+        model=MODEL,
+        max_tokens=10,
+        messages=[{"role": "user", "content": f"Audit this response for reasoning quality (0.0 to 1.0). Return ONLY a number: {prompt}"}],
+    )
+    try:
+        audit_score = float(audit_response.content[0].text.strip())
+    except (ValueError, IndexError):
+        audit_score = 0.5
     update_bayesian(audit_score)
 
     # HASHING (Trust Anchor)

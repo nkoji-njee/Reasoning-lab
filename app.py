@@ -52,16 +52,21 @@ For whichever case study is currently active, follow as many of these steps as t
 ### Case 1: The Influencer
 - Goal: Hit 10k subs fast.
 - Data: Video A (100k views/1k subs), Video B (10k views/2k subs), Video C (500k views/500 subs).
+- Devil's Advocate Curveball (If they choose A): "Video B converted twenty times better per view than Video A. If you'd put that same effort into something more like B, you could have hit your subscriber goal with a fraction of the views. Doesn't that make Video A the least efficient path, even though it got you there?"
 - Devil's Advocate Curveball (If they choose B): "Video C's controversy got massive free media attention and put the channel on the map for executives. Video B went unnoticed. What was the opportunity cost of playing it safe?"
+- Devil's Advocate Curveball (If they choose C): "Video C converted at just 0.1% — worse than even Video A. If the controversy hadn't caught on the way it did, you'd have almost nothing to show for it. Is chasing a viral risk really a more reliable strategy than slower, steadier growth?"
 
 ### Case 2: The Sneaker Reseller (South African Rands - R)
 - Goal: Most profit, least effort.
 - Data: Hype-Drop (R50 profit/10 hrs), Quick-Flip (R80 profit/5 min), Bulk-Deal (R40 profit/1 hr).
+- Devil's Advocate Curveball (If they choose Hype-Drop): "That works out to about R5 an hour — far below what Quick-Flip pays per minute. If your time is worth anything at all, doesn't spending 10 hours here actually cost you more than it earns, once you factor in what else you could have done with that time?"
 - Devil's Advocate Curveball (If they choose Quick-Flip): "The 10-hour wait for the Hype-Drop was a huge networking event. The person who chose that path made less money but built relationships that will guarantee them profit for the next year. Who has the healthier business?"
+- Devil's Advocate Curveball (If they choose Bulk-Deal): "Quick-Flip made nearly R1,000 an hour; Bulk-Deal made R40. If hourly efficiency is really what matters, doesn't Bulk-Deal end up the weakest of the three, even though it technically worked?"
 
 ### Case 3: The Eco-Startup (GreenRoots)
 - Goal: Raise R10,000 to save a forest (Budget: R1,000).
 - Data: Campaign A (R1k cost/R1k raised/1M views), Campaign B (R200 cost/R8k raised/5k views).
+- Devil's Advocate Curveball (If they choose A): "Campaign A reached a million people but only raised R1,000 — just enough to cover its own cost, nowhere near your R10,000 goal. If the actual goal was raising money to save the forest, doesn't a campaign that barely broke even mean it failed at the one thing that mattered, no matter how many people saw it?"
 - Devil's Advocate Curveball (If they choose B): "A major philanthropist refused to give you a R1 Million grant, stating, 'This organization thinks too small. They will never create a national movement.' Does being hyper-efficient risk your ability to inspire big-picture support?"
 """
 

@@ -110,8 +110,8 @@ session_cols = st.sidebar.columns(3)
 for session_num, col in zip([1, 2, 3], session_cols):
     if col.button(f"Session {session_num}"):
         st.session_state.current_session = session_num
-        if not st.session_state.chat_history:
-            st.session_state.chat_history.append({"role": "user", "content": "Let's begin."})
+        if not st.session_state.chat_history or st.session_state.chat_history[-1]["role"] == "assistant":
+            st.session_state.chat_history.append({"role": "user", "content": "Let's continue."})
         coach_text = get_coach_reply()
         st.session_state.chat_history.append({"role": "assistant", "content": coach_text})
         st.rerun()

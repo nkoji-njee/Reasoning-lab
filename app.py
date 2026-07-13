@@ -85,17 +85,36 @@ def update_bayesian(evidence_score):
     # instead of trending toward 0 regardless of reasoning quality.
     st.session_state.alpha += evidence_score
     st.session_state.beta += (1.0 - evidence_score)
+
+def get_coach_reply():
+    session_note = (
+        f"\n\n## CURRENT SESSION: {st.session_state.current_session}\n"
+        f"Follow the SESSION {st.session_state.current_session} rules above for this entire reply."
+    )
+    response = client.messages.create(
+        model=MODEL,
+        max_tokens=1024,
+        system=COACH_SYSTEM_PROMPT + session_note,
+        messages=st.session_state.chat_history,
+    )
+    return next((block.text for block in response.content if block.type == "text"), "")
 # 3. UI LAYOUT
 st.title("🧠 Reasoning Lab: Pixitex Prototype")
 
 maturity = st.session_state.alpha / (st.session_state.alpha + st.session_state.beta)
 st.sidebar.metric("Reasoning Maturity (teacher view)", f"{maturity:.2%}")
 
-st.sidebar.radio(
-    "Testing only: force session",
-    [1, 2, 3],
-    key="current_session",
-)
+st.sidebar.write(f"Testing: currently forced to Session {st.session_state.current_session}")
+st.sidebar.write("Click to jump directly to a session (triggers Claude's next reply immediately):")
+session_cols = st.sidebar.columns(3)
+for session_num, col in zip([1, 2, 3], session_cols):
+    if col.button(f"Session {session_num}"):
+        st.session_state.current_session = session_num
+        if not st.session_state.chat_history:
+            st.session_state.chat_history.append({"role": "user", "content": "Let's begin."})
+        coach_text = get_coach_reply()
+        st.session_state.chat_history.append({"role": "assistant", "content": coach_text})
+        st.rerun()
 
 if st.session_state.flagged_concerns:
     st.sidebar.warning(f"⚠️ {len(st.session_state.flagged_concerns)} flagged message(s) — review with a teacher.")
@@ -114,14 +133,7 @@ if prompt := st.chat_input("Analyze the data..."):
     with st.chat_message("user"):
         st.markdown(prompt)
       # Call AI Coach
-    session_note = f"\n\n## CURRENT SESSION: {st.session_state.current_session}\nFollow the SESSION {st.session_state.current_session} rules above for this entire reply."
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=1024,
-        system=COACH_SYSTEM_PROMPT + session_note,
-        messages=st.session_state.chat_history,
-    )
-    coach_text = next((block.text for block in response.content if block.type == "text"), "")
+    coach_text = get_coach_reply()
 
     with st.chat_message("assistant"):
         st.markdown(coach_text)

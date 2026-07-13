@@ -91,10 +91,10 @@ st.title("🧠 Reasoning Lab: Pixitex Prototype")
 maturity = st.session_state.alpha / (st.session_state.alpha + st.session_state.beta)
 st.sidebar.metric("Reasoning Maturity (teacher view)", f"{maturity:.2%}")
 
-st.session_state.current_session = st.sidebar.radio(
+st.sidebar.radio(
     "Testing only: force session",
     [1, 2, 3],
-    index=st.session_state.current_session - 1,
+    key="current_session",
 )
 
 if st.session_state.flagged_concerns:

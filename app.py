@@ -72,7 +72,9 @@ def update_bayesian(evidence_score):
     st.session_state.beta += (1.0 - evidence_score)
 # 3. UI LAYOUT
 st.title("🧠 Reasoning Lab: Pixitex Prototype")
-st.subheader(f"Current Reasoning Maturity: {st.session_state.alpha / (st.session_state.alpha + st.session_state.beta):.2%}")
+
+maturity = st.session_state.alpha / (st.session_state.alpha + st.session_state.beta)
+st.sidebar.metric("Reasoning Maturity (teacher view)", f"{maturity:.2%}")
 
 if st.session_state.flagged_concerns:
     st.sidebar.warning(f"⚠️ {len(st.session_state.flagged_concerns)} flagged message(s) — review with a teacher.")

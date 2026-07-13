@@ -81,7 +81,7 @@ if prompt := st.chat_input("Analyze the data..."):
         system=COACH_SYSTEM_PROMPT,
         messages=st.session_state.chat_history,
     )
-    coach_text = response.content[0].text
+    coach_text = next((block.text for block in response.content if block.type == "text"), "")
 
     with st.chat_message("assistant"):
         st.markdown(coach_text)
@@ -90,11 +90,13 @@ if prompt := st.chat_input("Analyze the data..."):
     # HIDDEN AUDITOR (Induction)
     audit_response = client.messages.create(
         model=MODEL,
-        max_tokens=10,
+        max_tokens=16,
+        thinking={"type": "disabled"},
         messages=[{"role": "user", "content": f"Audit this response for reasoning quality (0.0 to 1.0). Return ONLY a number: {prompt}"}],
     )
     try:
-        audit_score = float(audit_response.content[0].text.strip())
+        audit_text = next((block.text for block in audit_response.content if block.type == "text"), "")
+        audit_score = float(audit_text.strip())
     except (ValueError, IndexError):
         audit_score = 0.5
     update_bayesian(audit_score)

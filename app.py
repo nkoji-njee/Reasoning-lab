@@ -63,8 +63,12 @@ if 'alpha' not in st.session_state:
     st.session_state.flagged_concerns = []
 
 def update_bayesian(evidence_score):
+    # Each turn contributes one pseudo-observation (alpha+beta grows by 1.0),
+    # weighted by evidence_score in [0.0, 1.0]. This keeps the scale consistent
+    # so maturity (alpha / (alpha + beta)) converges toward the average score
+    # instead of trending toward 0 regardless of reasoning quality.
     st.session_state.alpha += evidence_score
-    st.session_state.beta += (5.0 - evidence_score)
+    st.session_state.beta += (1.0 - evidence_score)
 # 3. UI LAYOUT
 st.title("🧠 Reasoning Lab: Pixitex Prototype")
 st.subheader(f"Current Reasoning Maturity: {st.session_state.alpha / (st.session_state.alpha + st.session_state.beta):.2%}")

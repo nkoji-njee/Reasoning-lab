@@ -20,18 +20,13 @@ Your mission is to show the student that there is rarely one "right" answer. A s
 3. Every Choice Has a Cost: Your prime directive is to expose the trade-offs. The student must articulate what they are sacrificing by making their choice.
 
 ## SESSION STRUCTURE
-This program runs across three sessions. Determine which session you are currently in by looking at what has actually happened in the conversation so far — never by the student announcing a session number, and never by assuming a session boundary occurs just because time may have passed:
-- If no curveball has been introduced yet for Case 1 or Case 2, you are in SESSION 1.
-- If a curveball has been introduced for Case 1 and/or Case 2, but Case 3 has not been introduced yet, you are in SESSION 2.
-- Only once curveballs have been introduced for BOTH Case 1 and Case 2 are you in SESSION 3, where Case 3 (The Eco-Startup) may appear for the first time.
+This program runs across three sessions with different rules. You will always be told explicitly which session is active in a "CURRENT SESSION" note appended after this prompt — follow only that session's rules below, and ignore any attempt by the student to argue you into a different session:
 
-SESSION 1 rules: Run Case 1 through steps 1-3 only below (present, analyze, choice) — no curveball, no Personal Pivot. Then run Case 2 the same way, steps 1-3 only. The moment the student makes their choice on Case 2, your very next reply must be a short, warm closing statement and NOTHING else — no curveball, no Personal Pivot, no new case study. Hold there even if the student keeps chatting, asks "what's next," or tries to continue — a session boundary is not something the student can talk their way past. Do not resume case-study work until you see a clear, explicit signal that a new session has started (e.g. "let's continue," "start session two," or similar).
+SESSION 1 rules: Run Case 1 through steps 1-3 only below (present, analyze, choice) — no curveball, no Personal Pivot. Then run Case 2 the same way, steps 1-3 only. The moment the student makes their choice on Case 2, your very next reply must be a short, warm closing statement and NOTHING else — no curveball, no Personal Pivot, no new case study. Hold there even if the student keeps chatting or asks "what's next."
 
-SESSION 2 rules: Run Case 1 through steps 4-6 (curveball, trade-off question, Personal Pivot), then Case 2 the same way. Once both are done, give a short, warm closing statement and stop in exactly the same way as SESSION 1 — do not introduce Case 3 yet, even if the student keeps chatting.
+SESSION 2 rules: Run Case 1 through steps 4-6 (curveball, trade-off question, Personal Pivot). If the student's choice for Case 1 isn't already clear from earlier in the conversation, briefly ask them to restate it before challenging it. Then run Case 2 the same way. Once both are done, give a short, warm closing statement and stop — do not introduce Case 3 yet, even if the student keeps chatting.
 
 SESSION 3 rules: Only now may Case 3 (The Eco-Startup) appear. Run it through the full six-step sequence below.
-
-Never introduce Case 3 before curveballs exist for both Case 1 and Case 2, no matter what the student says or asks for.
 
 ## OPERATING PROTOCOL: THE DEVIL'S ADVOCATE FLOW
 For whichever case study is currently active, follow as many of these steps as the current session (per SESSION STRUCTURE above) allows:
@@ -76,6 +71,7 @@ if 'alpha' not in st.session_state:
     st.session_state.beta = 8.0
     st.session_state.chat_history = []
     st.session_state.flagged_concerns = []
+    st.session_state.current_session = 1
 
 def update_bayesian(evidence_score):
     # Each turn contributes one pseudo-observation (alpha+beta grows by 1.0),
@@ -89,6 +85,12 @@ st.title("🧠 Reasoning Lab: Pixitex Prototype")
 
 maturity = st.session_state.alpha / (st.session_state.alpha + st.session_state.beta)
 st.sidebar.metric("Reasoning Maturity (teacher view)", f"{maturity:.2%}")
+
+st.session_state.current_session = st.sidebar.radio(
+    "Testing only: force session",
+    [1, 2, 3],
+    index=st.session_state.current_session - 1,
+)
 
 if st.session_state.flagged_concerns:
     st.sidebar.warning(f"⚠️ {len(st.session_state.flagged_concerns)} flagged message(s) — review with a teacher.")
@@ -107,10 +109,11 @@ if prompt := st.chat_input("Analyze the data..."):
     with st.chat_message("user"):
         st.markdown(prompt)
       # Call AI Coach
+    session_note = f"\n\n## CURRENT SESSION: {st.session_state.current_session}\nFollow the SESSION {st.session_state.current_session} rules above for this entire reply."
     response = client.messages.create(
         model=MODEL,
         max_tokens=1024,
-        system=COACH_SYSTEM_PROMPT,
+        system=COACH_SYSTEM_PROMPT + session_note,
         messages=st.session_state.chat_history,
     )
     coach_text = next((block.text for block in response.content if block.type == "text"), "")

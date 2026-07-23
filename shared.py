@@ -145,10 +145,10 @@ def render_teacher_sidebar():
                 st.write(f"**{item['time']}** — {item['message']}")
 
 
-def render_session_page(session_number, subtitle):
+def render_session_page(session_number):
     init_state()
     st.title("🧠 Reasoning Lab: Pixitex Prototype")
-    st.caption(subtitle)
+    st.caption(f"Session {session_number}")
     render_teacher_sidebar()
 
     for message in st.session_state.chat_history:
